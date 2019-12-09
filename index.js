@@ -5,9 +5,9 @@ const WebSocket = require('ws');
 const webpack = require('webpack');
 
 const indexHtml = fs.readFileSync('./index.html');
-//const clientJs = fs.readFileSync('./client.js');
 
 const DashboardHeartBeat = require('./DashboardHeartBeat.js');
+const DashboardList = require('./DashboardList.js');
 
 const wss = new WebSocket.Server({
 	port: 8081
@@ -28,14 +28,13 @@ webpack({
 function main() {
 	const dashboardItems = [];
 	dashboardItems.push(new DashboardHeartBeat());
+	dashboardItems.push(new DashboardList());
 	const outstandingConnections = [];
-	setInterval(function() {
-		dashboardItems.forEach(elem => {
-			elem.gatherData();
-		});
+	setInterval(async function() {
+		await Promise.all(dashboardItems.map(elem => elem.gatherData()));
 		outstandingConnections.forEach(item => {
 			dashboardItems.forEach(elem => {
-				item.send(elem.sendData());
+				item.send(elem.send("updateNode"));
 			});
 		});
 	}, 1000);
@@ -44,7 +43,7 @@ function main() {
 		//ws.on('message', (event) => {});
 		outstandingConnections.push(ws);
 		dashboardItems.forEach(elem => {
-			ws.send(elem.createData());
+			ws.send(elem.send("createNode"));
 		});
 	});
 

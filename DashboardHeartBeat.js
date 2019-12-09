@@ -1,35 +1,20 @@
 const DashboardItem = require("./DashboardItem.js");
+const { createElement } = require('./utils.js');
 
 module.exports = class DashboardHeartBeat extends DashboardItem {
-	constructor(statArray) {
-		super();
+	constructor(id, statArray) {
+		super(id, "DashboardHeartBeat");
 		if(statArray) {
 			this.statArray = statArray;
 		} else {
 			this.statArray = [];
-			for(let i = 0; i < 10; i++) {
-				this.statArray.push(Math.sin(Math.random()));
-			}
 		}
 	}
-	gatherData() {
+	async gatherData() {
 		this.statArray.push(Math.sin(Math.random()));
-		this.statArray.shift();
-	}
-	sendData() {
-		return JSON.stringify({
-			type: "updateNode",
-			id: this.id,
-			data: this.statArray,
-		})
-	}
-	createData() {
-		return JSON.stringify({
-			type: "createNode",
-			dashboardType: "DashboardHeartBeat",
-			id: this.id,
-			data: this.statArray,
-		});
+		if(this.statArray.length > 10) {
+			this.statArray.shift();
+		}
 	}
 	setData(data) {
 		this.statArray = data;
@@ -46,20 +31,11 @@ module.exports = class DashboardHeartBeat extends DashboardItem {
 		this.div.ctx.stroke();
 	}
 	createNode() {
-		const div = document.createElement('div');
-		div.className = "dashboard-item";
-		document.getElementById('main-container').appendChild(div);
-		const canvas = document.createElement('canvas');
-		canvas.className = "dashboard-item-canvas";
-		canvas.width = div.offsetWidth;
-		canvas.height = div.offsetHeight;
-		div.appendChild(canvas);
-		let ctx = canvas.getContext("2d");
-		div.canvas = canvas;
-		div.ctx = ctx;
-		this.div = div;
-	}
-	static ClientCreated(values) {
-		return new DashboardHeartBeat(values.data);
+		this.div = createElement('div', document.getElementById('main-container'), null, "dashboard-item two-by-two");
+		this.div.canvas = createElement('canvas', this.div, null, 'dashboard-item-canvas');
+		this.div.canvas.width = this.div.offsetWidth;
+		this.div.canvas.height = this.div.offsetHeight;
+		this.div.ctx = this.div.canvas.getContext("2d");
+		this.div.ctx.strokeStyle = "white";
 	}
 }

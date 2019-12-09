@@ -6,34 +6,93 @@
 				margin: 0;
 				padding: 0;
 			}
-			.flex-container {
+			html {
+				background: linear-gradient(to bottom left, #4466FF, #4444CCCC);
+				color: white;
+			}
+			#top-container {
+				width: calc(100% - 8px);
+				height: calc(64px - 8px);
+				margin: 4px;
+				border: 1px solid white;
+				box-sizing: border-box;
+				border-radius: 8px;
+				justify-content: center;
 				display: flex;
-				flex-wrap: wrap;
+				align-items: center;
+				text-align: center;
+				font-size: xx-large;
+			}
+			#main-container {
+				display: grid;
+				margin: 4px;
+				height: calc(100% - 64px - 4px - 4px - 4px - 4px);
+				grid-template-columns: repeat(8, 1fr);
+				grid-auto-rows: calc(100% / 8);
+				grid-gap: 4px;
+				grid-auto-flow: dense;
 			}
 			.dashboard-item {
-				border: 1px solid black;
+				filter: drop-shadow(rgba(0, 0, 0, 0.75) 2px 2px 4px);
+				background: linear-gradient(to bottom left, gray, darkgray);
+				border: 1px solid white;
 				box-sizing: border-box;
-				margin: 4px;
 				border-radius: 8px;
-				width: calc(25% - 8px);
-				height: 128px;
 				overflow: hidden;
-				background-image: linear-gradient(to bottom right, #DDDDDD, #BBBBBB);
-				filter: drop-shadow(2px 2px 4px);
 			}
 			.dashboard-item-canvas {
 				width: 100%;
 				height: 100%;
 			}
+			.dashboard-list-title {
+				background-color: darkolivegreen;
+				text-align: center;
+			}
+			.two-by-two {
+				grid-row: span 2;
+				grid-column: span 2;
+			}
+			.eight-by-one {
+				grid-row: span 1;
+				grid-column: span 8;
+			}
+			.dashboard-pipeline {
+				display: flex;
+				justify-content: space-around;
+				height: 100%;
+				width: 100%;
+				align-items: center;
+			}
+			.dashboard-pipeline-element {
+				text-align: center;
+			}
 		</style>
 	</head>
 	<body>
+		<div id="top-container">
+			Random Dashboard
+		</div>
 		<div id="main-container" class="flex-container">
-			<div class="dashboard-item"></div>
-			<div class="dashboard-item"></div>
-			<div class="dashboard-item"></div>
-			<div class="dashboard-item"></div>
-			<div class="dashboard-item"></div>
+			<div class="dashboard-item eight-by-one">
+				<div class="dashboard-pipeline">
+					<div class="dashboard-pipeline-element">
+						<div>
+							First
+						</div>
+						<div>
+							100
+						</div>
+					</div>
+					<div class="dashboard-pipeline-element">
+						<div>
+							Second
+						</div>
+						<div>
+							320
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

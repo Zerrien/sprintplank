@@ -1,7 +1,16 @@
 module.exports = class DashboardItem {
-	constructor() {
-		this.id = "id_" + Math.floor(Math.random() * 1000000) + "_" + Date.now();
+	constructor(id, type) {
+		this.id = id ? id : "id_" + Math.floor(Math.random() * 1000000) + "_" + Date.now();
+		this.type = type;
 	}
-	gatherData() {
+	send(messageType) {
+		return JSON.stringify({
+			messageType: messageType,
+			dashboardType: this.type,
+			id: this.id,
+			data: this.statArray,
+		});
+	}
+	async gatherData() {
 	}
 }

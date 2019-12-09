@@ -1,5 +1,6 @@
 const socket = new WebSocket('ws://localhost:8081');
-const DashboardHeartBeat = require('./DashboardHeartBeat.js');
+
+const DashboardItems = require('./DashboardItems.js');
 
 socket.addEventListener('open', function(event) {
 	console.log(event);
@@ -12,14 +13,14 @@ socket.addEventListener('message', function(event) {
 	try {
 		result = JSON.parse(event.data);
 	} catch (e) {
-		console.log("Recieved a bad event message: ", event);
+		console.log("Received a bad event message: ", event);
 		return;
 	}
-	if(result.type === "createNode") {
-		const node = nodes[result.id] = DashboardHeartBeat.ClientCreated(result);
+	if(result.messageType === "createNode") {
+		const node = nodes[result.id] = new (DashboardItems[result.dashboardType])(result.id, result.data);
 		node.createNode();
 		node.draw();
-	} else if (result.type === "updateNode") {
+	} else if (result.messageType === "updateNode") {
 		const node = nodes[result.id];
 		node.setData(result.data);
 		node.draw();
