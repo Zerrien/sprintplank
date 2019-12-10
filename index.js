@@ -6,8 +6,9 @@ const webpack = require('webpack');
 
 const indexHtml = fs.readFileSync('./index.html');
 
-const DashboardHeartBeat = require('./DashboardHeartBeat.js');
-const DashboardList = require('./DashboardList.js');
+//const DashboardHeartBeat = require('./DashboardHeartBeat.js');
+//const DashboardList = require('./DashboardList.js');
+const items = require('./DashboardItems');
 
 const wss = new WebSocket.Server({
 	port: 8081
@@ -27,8 +28,11 @@ webpack({
 
 function main() {
 	const dashboardItems = [];
-	dashboardItems.push(new DashboardHeartBeat());
-	dashboardItems.push(new DashboardList());
+	dashboardItems.push(new items.DashboardHeartBeat());
+	dashboardItems.push(new items.DashboardList(null, null, async function(values) {
+		return values.people;
+	}));
+	dashboardItems.push(new items.DashboardPriorityList());
 	const outstandingConnections = [];
 	setInterval(async function() {
 		await Promise.all(dashboardItems.map(elem => elem.gatherData()));

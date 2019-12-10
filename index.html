@@ -66,6 +66,31 @@
 			.dashboard-pipeline-element {
 				text-align: center;
 			}
+			.job-status-passing {
+				background: linear-gradient(to left, #55CC55, #99CC99);
+				color: black;
+			}
+			@keyframes barberpole {
+				100% {
+					background-position: 100% 100%;
+				}
+			}
+			.job-status-in-progress {
+				background: repeating-linear-gradient(
+					45deg,
+					#CCCC55,
+					#CCCC55 10px,
+					#999955 10px,
+					#999955 20px
+				);
+				background-size: 200% 200%;
+				animation: barberpole 10s linear infinite;
+				color: black;
+			}
+			.job-status-failing {
+				background: linear-gradient(to left, #CC5555, #CC9999);
+				color: black;
+			}
 		</style>
 	</head>
 	<body>
@@ -92,6 +117,9 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="dashboard-item two-by-two">
+
 			</div>
 		</div>
 	</body>
