@@ -1,3 +1,5 @@
+const webpackConfig = require('./webpack.config.js');
+
 const http = require('http');
 const fs = require('fs');
 
@@ -15,12 +17,7 @@ const wss = new WebSocket.Server({
 });
 
 let clientJs;
-webpack({
-	"entry":"./client.js",
-	"output": {
-		"filename": "bundle.js",
-	},
-}, (err, stats) => {
+webpack(webpackConfig, (err, stats) => {
 	if(err) throw err;
 	clientJs = fs.readFileSync('./dist/bundle.js');
 	main();

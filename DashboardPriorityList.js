@@ -1,29 +1,40 @@
 const DashboardItem = require("./DashboardItem.js");
-const { fetchJSON, createElement } = require("./utils.js");
+const { fetchJSON } = require("./utils.js");
 
 let FAKE_TASKS = [
     {
         name: "Codebase Audit",
-        status: "Passing",
+        status: "Success",
         duration: 1000 + Math.random() * 5000,
     },
     {
         name: "Whizzbangs & Gargamels",
-        status: "Failing",
+        status: "Failed",
         duration: 1000 + Math.random() * 5000,
     },
     {
         name: "Maslow's Hierarchy",
-        status: "Passing",
+        status: "Success",
         duration: 1000 + Math.random() * 5000,
     },
     {
         name: "CI Build",
-        status: "In Progress",
+        status: "In progress",
         duration: 1000 + Math.random() * 5000,
     },
 ];
-const FAKE_TASK_HIERARCHY = ["Failing", "In Progress", "Passing"];
+const FAKE_TASK_HIERARCHY = ["Disabled", "Aborted", "Failed", "Unstable", "In progress", "Success"];
+
+/*
+Unstable
+In progress
+Success
+Disabled
+Aborted
+Failed
+*/
+
+
 
 module.exports = class DashboardPriorityList extends DashboardItem {
 	constructor(id, statArray, processFunc) {
@@ -38,15 +49,15 @@ module.exports = class DashboardPriorityList extends DashboardItem {
             const duration = elem.duration - 1000;
             if(duration < 0) {
                 let status;
-                if(elem.status === "In Progress") {
+                if(elem.status === "In progress") {
                     if(Math.random() < 0.5) {
-                        status = "Passing";
+                        status = "Success";
                     } else {
-                        status = "Failing";
+                        status = "Failed";
                     }
                 } else {
                     if(Math.random() < 0.1) {
-                        status = "In Progress";
+                        status = "In progress";
                     } else {
                         status = elem.status;
                     }
@@ -57,20 +68,5 @@ module.exports = class DashboardPriorityList extends DashboardItem {
             }
         });
         this.statArray = FAKE_TASKS;
-	}
-	setData(data) {
-		this.statArray = data;
-	}
-	draw() {
-        this.div.listDiv.innerHTML = '';
-        this.statArray.concat().sort(function(a, b) {
-            return FAKE_TASK_HIERARCHY.indexOf(b.status) - FAKE_TASK_HIERARCHY.indexOf(a.status);
-        }).reverse().forEach(elem => {
-            createElement('div', this.div.listDiv, null, `job-status-${elem.status.replace(' ', '-').toLowerCase()}`, elem.name);
-        });
-	}
-	createNode() {
-        this.div = createElement('div', document.getElementById('main-container'), null, "dashboard-item two-by-two");
-        this.div.listDiv = createElement('div', this.div);
 	}
 }

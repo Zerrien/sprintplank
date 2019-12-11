@@ -1,13 +1,15 @@
-const socket = new WebSocket('ws://localhost:8081');
+import Vue from 'vue/dist/vue.js'
+import App from './App.vue'
+import store from "./store.js"
 
-const DashboardItems = require('./DashboardItems.js');
-
-socket.addEventListener('open', function(event) {
-	console.log(event);
-	socket.send('Do this!');
+new Vue({
+	el: '#app',
+	store,
+	render: h => h(App),
 });
 
-const nodes = {};
+const socket = new WebSocket('ws://localhost:8081');
+
 socket.addEventListener('message', function(event) {
 	let result;
 	try {
@@ -17,12 +19,16 @@ socket.addEventListener('message', function(event) {
 		return;
 	}
 	if(result.messageType === "createNode") {
-		const node = nodes[result.id] = new (DashboardItems[result.dashboardType])(result.id, result.data);
-		node.createNode();
-		node.draw();
+		store.dispatch("addNode", {
+			dashboardType: result.dashboardType,
+			id: result.id,
+			data: result.data,
+		});
 	} else if (result.messageType === "updateNode") {
-		const node = nodes[result.id];
-		node.setData(result.data);
-		node.draw();
+		store.dispatch("updateNode", {
+			dashboardType: result.dashboardType,
+			id: result.id,
+			data: result.data,
+		});
 	}
 });
