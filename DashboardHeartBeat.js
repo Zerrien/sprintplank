@@ -11,7 +11,7 @@ module.exports = class DashboardHeartBeat extends DashboardItem {
 	}
 	async gatherData() {
 		this.statArray.push(Math.sin(Math.random()));
-		if(this.statArray.length > 10) {
+		if(this.statArray.length > 50) {
 			this.statArray.shift();
 		}
 	}

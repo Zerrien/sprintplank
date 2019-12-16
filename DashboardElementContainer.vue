@@ -1,7 +1,7 @@
 <template lang="pug">
     #dashboard-container
-        Heartbeat(v-for="elem in $store.state.nodes" v-if="elem.dashboardType === 'DashboardHeartBeat'" v-bind:elem="elem")
         StatusList(v-for="elem in $store.state.nodes" v-if="elem.dashboardType === 'DashboardPriorityList'" v-bind:elem="elem")
+        Heartbeat(v-for="elem in $store.state.nodes" v-if="elem.dashboardType === 'DashboardHeartBeat'" v-bind:elem="elem")
 </template>
 
 <script>
@@ -21,7 +21,7 @@
         height: 100%
         display: grid
         grid-template-columns: repeat(8, 1fr)
-        grid-auto-rows: calc(100% / 8)
-        grid-gap: 4px
+        grid-template-rows: repeat(8, 1fr)
+        grid-gap: 20px
         grid-auto-flow: dense
 </style>

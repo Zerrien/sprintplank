@@ -11,6 +11,7 @@ const indexHtml = fs.readFileSync('./index.html');
 //const DashboardHeartBeat = require('./DashboardHeartBeat.js');
 //const DashboardList = require('./DashboardList.js');
 const items = require('./DashboardItems');
+const { fetchJSON, fetchText } = require("./utils.js");
 
 const wss = new WebSocket.Server({
 	port: 8081
@@ -23,13 +24,33 @@ webpack(webpackConfig, (err, stats) => {
 	main();
 });
 
+// const arr2 = ["Disabled", "Aborted", "Failed", "Unstable", "In progress", "Success"];
+
+// TODO: Fill this in with URLs
+const arr = [
+	{
+		url: '',
+		jobName: '',
+	}
+]
+
 function main() {
 	const dashboardItems = [];
 	dashboardItems.push(new items.DashboardHeartBeat());
-	dashboardItems.push(new items.DashboardList(null, null, async function(values) {
-		return values.people;
+	dashboardItems.push(new items.DashboardPriorityList(null, null, async function(values) {
+		const results = await Promise.all(arr.map(async function(elem) {
+			return {
+				text: await fetchText(elem.url),
+				elem: elem,
+			};
+		}));
+		return results.map(elem => {
+			return {
+				name: elem.elem.jobName,
+				status: elem.text,
+			}
+		});
 	}));
-	dashboardItems.push(new items.DashboardPriorityList());
 	const outstandingConnections = [];
 	setInterval(async function() {
 		await Promise.all(dashboardItems.map(elem => elem.gatherData()));
@@ -41,7 +62,6 @@ function main() {
 	}, 1000);
 
 	wss.on('connection', (ws) => {
-		//ws.on('message', (event) => {});
 		outstandingConnections.push(ws);
 		dashboardItems.forEach(elem => {
 			ws.send(elem.send("createNode"));

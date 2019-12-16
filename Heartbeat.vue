@@ -56,6 +56,8 @@
 
 <style lang="sass">
     .heartbeat
-        grid-row: span 2
-        grid-column: span 2
+        width: 100%
+        height: 100%
+        grid-row: span 1
+        grid-column: span 8
 </style>
