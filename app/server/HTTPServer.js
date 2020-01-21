@@ -30,7 +30,7 @@ function createServer(indexHTML, clientJs) {
 async function webpackUsingConfig(config) {
     console.log("Webpacking JavaScript...")
 	return new Promise((res, rej) => {
-		webpack(webpackConfig, (err, stats) => {
+		webpack(webpackConfig, function(err, stats) {
             if(err) return rej(err);
             console.log("JavaScript Packed.")
 			res();

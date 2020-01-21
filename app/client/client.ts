@@ -1,6 +1,6 @@
-import Vue from 'vue/dist/vue.js'
+import Vue from 'vue'
 import App from './App.vue'
-import store from "./store.js"
+import store from "./store"
 
 new Vue({
 	el: '#app',

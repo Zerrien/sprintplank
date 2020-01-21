@@ -3,13 +3,14 @@
         DashboardElementContainer
 </template>
 
-<script>
+<script lang="ts">
     import DashboardElementContainer from "./DashboardElementContainer.vue";
-    export default {
+    import Vue from 'vue';
+    export default Vue.extend({
 		components: {
             DashboardElementContainer,
 		},
-    };
+    });
 </script>
 
 <style lang="sass">

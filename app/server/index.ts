@@ -1,10 +1,10 @@
-const WebSocket = require('ws');
+import * as WebSocket from 'ws'
 
 const wss = new WebSocket.Server({port: 8081});
 
-const { fetchJSON, fetchText } = require("../utils.js");
-const { launchHTTPServer } = require('./HTTPServer');
-const { DashboardItem } = require('./DashboardItem');
+import { fetchJSON, fetchText } from "../utils.js"
+import { launchHTTPServer } from './HTTPServer'
+import { DashboardItem } from './DashboardItem'
 
 (async function() {
 	await launchHTTPServer();
@@ -13,29 +13,38 @@ const { DashboardItem } = require('./DashboardItem');
 
 // const arr2 = ["Disabled", "Aborted", "Failed", "Unstable", "In progress", "Success"];
 // TODO: Fill this in with URLs
-const arr = [];
+const arr = [
+	{
+		url: "http://api.open-notify.org/astros.json",
+		jobName: "astronauts",
+	}
+];
 
 const dashboardItems = [];
 
+import { Status, ActualStatus } from '../types';
+
 dashboardItems.push(new DashboardItem(null, null, "DashboardHeartBeat", async function() {
-	if(this.statArray.length > 50) {
-		this.statArray.shift();
-	}
+	if(this.statArray.length > 50) this.statArray.shift();
 	return this.statArray.concat(Math.sin(Math.random()));
 }));
 
-dashboardItems.push(new DashboardItem(null, null, "DashboardPriorityList", async function() {
-	return (await Promise.all(arr.map(async function(elem) {
+async function fetchAllURLs(arrayOfURLObjects:Status[]) {
+	return Promise.all(arrayOfURLObjects.map(async function(elem) {
+		return Object.assign({}, elem, {
+			json: await fetchJSON(elem.url)
+		});
+	}));
+}
+
+dashboardItems.push(new DashboardItem(null, null, "DashboardPriorityList", async function():Promise<ActualStatus[]> {
+	const results = await (await fetchAllURLs(arr)).map(elem => {
 		return {
-			json: await fetchJSON(elem.url),
-			elem: elem,
+			name: elem.jobName,
+			status: elem.json.people[0].name,
 		}
-	}))).map(elem => {
-		return {
-			name: elem.elem.jobName,
-			status: elem.text
-		}
-	});
+	})
+	return results
 }));
 
 function main() {
@@ -43,7 +52,7 @@ function main() {
 	const a = doThingMain(dashboardItems, outstandingConnections);
 
 	a();
-	setInterval(a, 1000);
+	setInterval(a, 30000);
 
 	wss.on('connection', (ws) => {
 		outstandingConnections.push(ws);

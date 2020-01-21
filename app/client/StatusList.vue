@@ -4,25 +4,36 @@
             .list-text {{ item.name }}
 </template>
 
-<script>
+<script lang="ts">
+    import { ActualStatus } from '../types';
+    import Vue, { PropType } from 'vue';
+    import Component from 'vue-class-component'
+
     const FAKE_TASK_HIERARCHY = ["Disabled", "Aborted", "Failed", "Unstable", "In progress", "Success"];
-    export default {
-        props: [
-            "elem",
-        ],
-        computed: {
-            sortedItems() {
-                return this.elem.data.sort(function(a, b) {
-                    return FAKE_TASK_HIERARCHY.indexOf(b.status) - FAKE_TASK_HIERARCHY.indexOf(a.status);
-                }).reverse();
-            },
-        },
-        methods: {
-            toClassName(name) {
-                return `status-${name.replace(" ", "-").toLowerCase()}`;
+
+    type ActualStatusData = {
+        data: ActualStatus[]
+    }
+
+    @Component({
+        props: {
+            elem: {
+                type: Object as PropType<ActualStatusData>,
             }
         }
-    };
+    })
+
+    export default class StatusList extends Vue {
+        elem: ActualStatusData;
+        get sortedItems():ActualStatus[] {
+            return [...this.elem.data].sort(function(a,b) {
+                return FAKE_TASK_HIERARCHY.indexOf(b.status) - FAKE_TASK_HIERARCHY.indexOf(a.status);
+            }).reverse();
+        }
+        toClassName(name:string):string {
+            return `status-${name.replace(" ", "-").toLowerCase()}`;
+        }
+    }
 </script>
 
 <style lang="sass">

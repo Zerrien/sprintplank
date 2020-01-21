@@ -3,7 +3,7 @@
         canvas(ref="heartbeat-canvas")
 </template>
 
-<script>
+<script lang="ts">
     export default {
         data() {
             return {
@@ -47,9 +47,6 @@
             elem: function(val, oldVal) {
                 this.updateCanvas();
             },
-        },
-        render() {
-            console.log("???");
         },
     };
 </script>
