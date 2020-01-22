@@ -52,7 +52,7 @@ function main() {
 	const a = doThingMain(dashboardItems, outstandingConnections);
 
 	a();
-	setInterval(a, 30000);
+	setInterval(a, 1000);
 
 	wss.on('connection', (ws) => {
 		outstandingConnections.push(ws);
