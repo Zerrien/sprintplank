@@ -17,42 +17,49 @@ const arr = [
 	{
 		url: "http://api.open-notify.org/astros.json",
 		jobName: "astronauts",
-	}
+	},
 ];
 
 const dashboardItems = [];
 
 import { Status, ActualStatus } from '../types';
 
-dashboardItems.push(new DashboardItem(null, null, "DashboardHeartBeat", async function() {
+async function fetchAllURLs(arrayOfURLObjects:Status[]):Promise<(Status & {json:any})[]> {
+	return Promise.all(arrayOfURLObjects.map(async function(elem) {
+		const k = Object.assign({}, elem, {
+			json: await fetchJSON(elem.url)
+		});
+		return k;
+	}));
+}
+
+dashboardItems.push(new DashboardItem("Heartbeat", async function() {
 	if(this.statArray.length > 50) this.statArray.shift();
 	return this.statArray.concat(Math.sin(Math.random()));
 }));
 
-async function fetchAllURLs(arrayOfURLObjects:Status[]) {
-	return Promise.all(arrayOfURLObjects.map(async function(elem) {
-		return Object.assign({}, elem, {
-			json: await fetchJSON(elem.url)
-		});
-	}));
-}
-
-dashboardItems.push(new DashboardItem(null, null, "DashboardPriorityList", async function():Promise<ActualStatus[]> {
-	const results = await (await fetchAllURLs(arr)).map(elem => {
-		return {
-			name: elem.jobName,
-			status: elem.json.people[0].name,
+dashboardItems.push(new DashboardItem("StatusList", async function():Promise<ActualStatus[]> {
+	const results = await fetchAllURLs(arr);
+	const outputs:ActualStatus[] = results.map(elem => {
+		let k:string = "null";
+		if(elem.json?.people[0]?.name) {
+			k = elem.json.people[0].name;
 		}
-	})
-	return results
+		let m:ActualStatus = {
+			name: elem.jobName,
+			status: k,
+		};
+		return m;
+	});
+	return outputs;
 }));
 
-function main() {
+function main():void {
 	const outstandingConnections = [];
-	const a = doThingMain(dashboardItems, outstandingConnections);
 
+	const a = doThingMain(dashboardItems, outstandingConnections);
 	a();
-	setInterval(a, 1000);
+	setInterval(a, 30000);
 
 	wss.on('connection', (ws) => {
 		outstandingConnections.push(ws);
@@ -62,7 +69,7 @@ function main() {
 	});
 }
 
-function doThingMain(dashboardItems, outstandingConnections) {
+function doThingMain(dashboardItems:DashboardItem[], outstandingConnections:any[]):() => Promise<void> {
 	return async function() {
 		await Promise.all(dashboardItems.map(elem => {
 			return elem.gatherData()

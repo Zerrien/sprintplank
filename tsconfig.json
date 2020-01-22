@@ -6,4 +6,5 @@
     },
     "include": ["**/*.ts", "**/*.vue"],
     "exclude": ["node_modules"],
+    "files": ["./app/vue-shim.d.ts"]
 }

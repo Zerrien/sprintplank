@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^13.1.8",
     "typescript": "^3.7.5",
     "vue": "^2.6.10",
     "vue-template-compiler": "^2.6.10",

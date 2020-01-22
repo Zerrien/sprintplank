@@ -1,7 +1,6 @@
 <template lang="pug">
 #dashboard-container
-    StatusList(v-for="elem in $store.state.nodes" v-if="elem.dashboardType === 'DashboardPriorityList'" v-bind:elem="elem")
-    Heartbeat(v-for="elem in $store.state.nodes" v-if="elem.dashboardType === 'DashboardHeartBeat'" v-bind:elem="elem")
+    component(v-for="elem in $store.state.nodes" v-bind:is="elem.dashboardType" v-bind:data="elem")
 </template>
 
 <script lang="ts">

@@ -16,9 +16,9 @@ type ActualStatusData = {
 
 @Component
 export default class StatusList extends Vue {
-    @Prop() elem: ActualStatusData;
+    @Prop() data: ActualStatusData;
     get sortedItems():ActualStatus[] {
-        return [...this.elem.data].sort(function(a,b) {
+        return [...this.data.data].sort(function(a,b) {
             return FAKE_TASK_HIERARCHY.indexOf(b.status) - FAKE_TASK_HIERARCHY.indexOf(a.status);
         }).reverse();
     }

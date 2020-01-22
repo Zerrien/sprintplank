@@ -12,7 +12,7 @@ type Stuff = {
 
 @Component
 export default class Heartbeat extends Vue {
-    @Prop() readonly elem: Stuff;
+    @Prop() readonly data: Stuff;
     @Provide() context: CanvasRenderingContext2D;
     @Provide() width: number;
     @Provide() height: number;
@@ -24,22 +24,22 @@ export default class Heartbeat extends Vue {
         this.height = this.heartbeatCanvas.height = this.heartbeatCanvas.parentElement.clientHeight;
         this.updateCanvas();
     }
-    @Watch('elem')
+    @Watch('data')
     onElemChanged(val: Stuff, oldVal: Stuff) {
         this.updateCanvas();
     }
     updateCanvas() {
         const ctx = this.context;
-        const min = Math.min(...this.elem.data);
-        const max = Math.max(...this.elem.data);
+        const min = Math.min(...this.data.data);
+        const max = Math.max(...this.data.data);
         ctx.clearRect(0, 0, this.width, this.height);
         ctx.beginPath();
         function linearInterpolate(a, min, max, index) {
             return ((index - min) / (max - min)) * a;
         }
-        ctx.moveTo(0, this.height - linearInterpolate(this.height, min, max, this.elem.data[0]));
-        for(let i = 1; i < this.elem.data.length; i++) {
-            ctx.lineTo(linearInterpolate(this.width, 0, 1, i / (this.elem.data.length - 1)), this.height - linearInterpolate(this.height, min, max, this.elem.data[i]));
+        ctx.moveTo(0, this.height - linearInterpolate(this.height, min, max, this.data.data[0]));
+        for(let i = 1; i < this.data.data.length; i++) {
+            ctx.lineTo(linearInterpolate(this.width, 0, 1, i / (this.data.data.length - 1)), this.height - linearInterpolate(this.height, min, max, this.data.data[i]));
         }
         ctx.stroke();
     }
